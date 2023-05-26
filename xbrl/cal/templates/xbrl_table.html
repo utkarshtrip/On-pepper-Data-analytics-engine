@@ -1,0 +1,307 @@
+{% load static %}
+<!DOCTYPE html>
+<html style="width: 100%; height: 100%" lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>XBRL Table</title>
+    <base href="/" />
+    <link rel="stylesheet" href='{% static "xbrl_table.css" %}' />
+  </head>
+  <body>
+    <div class="page">
+      <div class="upload_button">
+        <form
+          method="POST"
+          enctype="multipart/form-data"
+          action="{% url 'xbrl_table' %}"
+          id="upload-form"
+          style="padding: 10px; cursor: pointer; margin-top: 5px"
+        >
+          {% csrf_token %}
+          <div style="position: relative; display: inline-block">
+            <input
+              type="file"
+              name="file"
+              id="file-input"
+              style="display: none"
+            />
+            <label for="file-input" style="cursor: pointer; display: flex">
+              <img
+                src="{% static 'upload.svg' %}"
+                alt="Upload"
+                style="cursor: pointer; padding-right: 5px"
+              />
+              Select Files
+            </label>
+          </div>
+        </form>
+      </div>
+      <div class="left_main_div">
+        <div class="logo">
+          <img src="{% static 'pepper-logo.svg' %}" />
+        </div>
+        <div class="Column_div">
+          <b>Columns</b>
+          {% for header in data.0.keys %}
+          <div
+            class="column-box"
+            draggable="true"
+            ondragstart="drag(event)"
+            data-type="column"
+          >
+            <span>{{ header|linebreaksbr }}</span>
+          </div>
+          {% endfor %}
+          <br>
+          <br>
+          <br>
+          <br>
+          <br>
+          <br>
+        </div>
+      </div>
+      <div class="right_main_div">
+        <div style="display: flex; flex-direction: column; align-items: center">
+          <div class="onPepper">
+            <div
+              style="
+                display: flex;
+                justify-content: center;
+                align-items: center;
+              "
+            ></div>
+            <div class="onPepper">
+              <h1>Data Analytics Engine</h1>
+            </div>
+          </div>
+        </div>
+        <div class="drop_and_graph">
+          <div class="parent_div">
+            <div class="drop_box_cum_expression" id="dropZone">
+              <h3>Expression:</h3>
+              <div class="sting_holder">
+              <span id="message">Drag and drop column and operator here</span>
+              <div>
+                <ul style="padding-left: 0px; margin: 0" id="expressionList"></ul>
+              </div>
+              <div>
+                <button id="clearExpressionList" type="button" onclick="clearExpressionList()">Clear</button>
+              </div>
+            </div>
+            <div
+              style="display: flex; flex-direction: row; align-items: center"
+            >
+
+            <button type="submit" id="submitExpressionBtn">Submit</button>
+          </div>
+          </div>
+          
+          <div class="Arithmetic_div">
+            <h3>
+              <b>Operators</b>
+            </h3>
+            <br />
+            <div>
+              <div class="operator-box-container">
+                <div
+                  class="operator-box"
+                  draggable="true"
+                  ondragstart="drag(event)"
+                  data-type="operator"
+                  >
+                  <span>+</span>
+                </div>
+                <div
+                  class="operator-box"
+                  draggable="true"
+                  ondragstart="drag(event)"
+                  data-type="operator"
+                >
+                  <span>-</span>
+                </div>
+                <div
+                  class="operator-box"
+                  draggable="true"
+                  ondragstart="drag(event)"
+                  data-type="operator"
+                  >
+                  <span>x</span>
+                </div>
+                <div
+                  class="operator-box"
+                  draggable="true"
+                  ondragstart="drag(event)"
+                  data-type="operator"
+                >
+                  <span>/</span>
+                </div>
+                <div
+                  class="operator-box"
+                  draggable="true"
+                  ondragstart="drag(event)"
+                  data-type="operator"
+                >
+                  <span>(</span>
+                </div>
+                <div
+                  class="operator-box"
+                  draggable="true"
+                  ondragstart="drag(event)"
+                  data-type="operator"
+                >
+                  <span>)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="graph_image" id="graphImageDiv" style="display: none;">
+            <div class="expressionDiv" id="expressionDiv"></div>
+          <iframe id="graph-iframe"></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+    <script>
+      document
+      .getElementById("file-input")
+      .addEventListener("change", function () {
+        document.getElementById("upload-form").submit();
+      });
+      
+      const dropZone = document.getElementById("dropZone");
+      const expressionList = document.getElementById("expressionList");
+      const submitExpressionBtn = document.getElementById(
+        "submitExpressionBtn"
+        );
+      const messageDiv = document.getElementById("message");
+      const clearBtn = document.getElementById("clearExpressionList");
+      const graphImageDiv = document.getElementById("graphImageDiv");
+      let columnDropped = false;
+      let expression = "";
+
+      if (expression === "") {
+        clearBtn.style.display = "none";
+      }
+
+      dropZone.addEventListener("dragover", function (event) {
+        event.preventDefault();
+      });
+
+      dropZone.addEventListener("drop", function (event) {
+  event.preventDefault();
+  const draggedData = event.dataTransfer.getData("text/plain");
+  const columnCopy = document.createElement("div");
+  columnCopy.textContent = draggedData;
+
+  const dataType = event.dataTransfer.getData("data-type");
+
+  if (expression === "" && dataType === "column") {
+    // Add the first dropped column name to the expression
+    expression += draggedData;
+  } else if (expression !== "" && dataType === "operator") {
+    // Add the dropped operator to the expression
+    expression += draggedData;
+  } else if (expression !== "" && (draggedData === "(" || dataType === "column")) {
+    // Check if the dropped data is "(" or a column name
+    if (draggedData === "(") {
+      // Add "(" to the expression and increase the open parentheses count
+      expression += draggedData;
+      openParenthesesCount++;
+    } else {
+      // Add the dropped column name to the expression
+      expression += draggedData;
+    }
+  } else if (expression !== "" && draggedData === ")") {
+    // Check if the dropped data is ")"
+    if (openParenthesesCount > closedParenthesesCount) {
+      // Add ")" to the expression and increase the closed parentheses count
+      expression += draggedData;
+      closedParenthesesCount++;
+    }
+  }
+
+  if (expression !== "") {
+    messageDiv.style.display = "none";
+    clearBtn.style.display = "initial";
+  } else {
+    messageDiv.style.opacity = "0.3";
+    clearBtn.style.display = "none";
+  }
+
+  // Update the expression list
+  expressionList.textContent = expression;
+});
+
+      
+      function drag(event) {
+        event.dataTransfer.setData("text/plain", event.target.textContent);
+        event.dataTransfer.setData(
+          "data-type",
+          event.target.getAttribute("data-type")
+        );
+      }
+      
+      function clearExpressionList() {
+        expressionList.innerHTML = "";
+        expression = "";
+        columnDropped = false;
+      }
+
+      submitExpressionBtn.addEventListener("click", function () {
+  // Send the expression list to the backend
+  submitExpressionList(expression);
+  messageDiv.style.display = "initial";
+  clearBtn.style.display = "none";
+  graphImageDiv.style.display = "block";
+});
+
+async function submitExpressionList(expression) {
+  const csrfToken = document.querySelector("[name=csrfmiddlewaretoken]").value;
+
+  try {
+    const response = await fetch("/submit-expression", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": csrfToken,
+      },
+      body: JSON.stringify({ expressionList: expression }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+
+    const data = await response.json();
+    const plotHtml = data.plot_html;
+    const expressionString = data.expression_string;
+
+    // Get the expression div element
+    const expressionDiv = document.getElementById("expressionDiv");
+
+    // Set the expression string as the inner HTML of the div
+    expressionDiv.innerHTML = expressionString;
+
+
+    // Get the iframe element
+    const iframe = document.getElementById("graph-iframe");
+
+    // Set the HTML content of the iframe
+    iframe.contentDocument.open();
+    iframe.contentDocument.write(plotHtml);
+    iframe.contentDocument.close();
+
+    // Clear the expression list and reset variables
+    clearExpressionList();
+    console.log(expressionList, "Expression list cleared");
+  } catch (error) {
+    console.error("Error:", error);
+  }
+}
+
+    </script>
+  </body>
+</html>

@@ -1,0 +1,184 @@
+body {
+    font-family: "Inter", sans-serif;
+    font-style: normal;
+    margin: 0px;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+  }
+  
+  .page {
+    display: flex;
+    flex-direction: row;
+    overflow: hidden;
+  }
+
+  .upload_button {
+    position: absolute;
+    top: 15px;
+    right: 30px;
+    box-shadow: 0px 2px 6px rgba(24, 71, 25, 0.1);
+    border-radius: 5px;
+  }
+
+  /* .left_main_div {
+    height: 100%;
+  } */
+
+  .logo {
+    border-right: 1px solid #dcdede;
+    display: flex;
+    width: 211px;
+    justify-content: center;
+    border-right: 1px solid #dcdede;
+    padding: 15px;
+    /* margin-top: -10px; */
+  }
+
+  .Column_div {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    border: 1px solid #dcdede;
+    padding: 20px;
+    width: 200px;
+    position: absolute;
+    left: 0px;
+    height: 100%;
+    background-color: #f9fbfc;
+    overflow: auto;
+  }
+  
+  .integer-column {
+    cursor: move;
+  }
+
+  .column-box {
+    padding: 10px;
+    display: inline-block;
+    border-bottom: 1px solid #dcdede;
+    overflow-wrap: break-word;
+    cursor: grab;
+    text-align: initial;
+  }
+
+  .right_main_div {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+  }
+
+  .drop_and_graph {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .parent_div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .drop_box_cum_expression {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 2px dashed #f3f4f6;
+    height: 300px;
+    width: 500px;
+    border-radius: 5px;
+    background-color: rgb(250, 252, 252);
+  }
+
+  .sting_holder{
+    width: 75%;
+    min-height: 25px;
+    padding: 10px;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    border-radius: 25px;
+  }
+
+  #message{
+    opacity: 0.3;
+    font-size: 12px;
+  }
+
+  #clearExpressionList {
+    font-weight: 500;
+    font-size: 13px;
+    color: #ed1b2e;
+    padding: 0 3px;
+    background-color: rgb(250, 252, 252);
+    border: none;
+    cursor: pointer;
+    float: right;
+  }
+
+  #submitExpressionBtn {
+    font-weight: 500;
+    font-size: 18px;
+    color: #ffffff;
+    padding: 10px 18px;
+    background-color: #0eb198;
+    border-radius: 6px;
+    border: 0px;
+    cursor: pointer;
+  }
+
+  .Arithmetic_div {
+    display: flex;
+    flex-direction: row;
+    text-align: center;
+    padding: 20px;
+    box-shadow: 0px 2px 6px rgba(21, 69, 29, 0.1);
+    margin-left: 10px;
+    border-radius: 5px;
+  }
+
+  .operator-box-container {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .operator-box {
+    border: 1px solid #dcdede;
+    padding: 10px;
+    margin: 5px;
+    display: inline-block;
+    cursor: grab;
+    border-radius: 5px;
+  }
+
+  .graph_image {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    padding-left: 30px;
+  }
+
+  #graph-iframe{
+    border: none;
+    overflow: auto;
+    height: 25rem;
+    width: 35rem;
+    /* border: 1px solid #dcdede; */
+  }
+
+  .expressionDiv{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 35rem;
+    overflow-wrap: break-word;
+  }
