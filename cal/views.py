@@ -49,7 +49,6 @@ def submit_expression(request):
 
         plot_html = modified_result(df, expression_list, expression_string)
         # Render the HTML page with the graph
-        return JsonResponse({'plot_html': plot_html,
-                             'expression_string': expression_string,})
+        return JsonResponse({'plot_html': plot_html,})
 
     return JsonResponse({'status': 'error'})
