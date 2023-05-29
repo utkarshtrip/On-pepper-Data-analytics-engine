@@ -89,11 +89,20 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    border: 2px dashed #f3f4f6;
-    height: 300px;
-    width: 500px;
-    border-radius: 5px;
-    background-color: rgb(250, 252, 252);
+  }
+
+  .poora_box{
+  border: 2px dashed #f3f4f6;
+  height: 300px;
+  width: 500px;
+  border-radius: 5px;
+  background-color: rgb(250, 252, 252);
+  }
+
+  .checkbox{
+    display: flex;
+    align-items: center;
+    direction: rtl;
   }
 
   .sting_holder{
@@ -108,9 +117,11 @@ body {
     border-radius: 25px;
   }
 
-  #message{
-    opacity: 0.3;
-    font-size: 12px;
+  #expressionInput{
+    border: none;
+    width: 100%;
+    min-height: 25px;
+    outline: none;
   }
 
   #clearExpressionList {
