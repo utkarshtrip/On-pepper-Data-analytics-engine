@@ -126,11 +126,13 @@ def modified_result(df, expression_list, expression_string):
     modified_df['new_column']=apply_operations(modified_df,expression_list)
     
     modified_df['Period'] = modified_df['Period'].astype('datetime64[ns]')
-    print("datatype of period:", modified_df['Period'])
+    # print("datatype of period:", modified_df['Period'])
     # modified_df['Period'] = pd.to_datetime(modified_df['Period'], format='%Y%m%d')
     
     fig = go.Figure()
     fig.add_trace(go.Scatter(x=modified_df[modified_df.columns.tolist()[0]], y=modified_df['new_column'], mode='lines'))
+    fig.update_layout(title=expression_string, title_y=0.9, title_x=0.5, title_yanchor='top')
+    plot_div = opy.plot(fig, auto_open=False, output_type='div')
     fig.update_layout(
     xaxis=dict(
         rangeselector=dict(
