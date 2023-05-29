@@ -4,7 +4,6 @@ body {
     margin: 0px;
     height: 100%;
     width: 100%;
-    overflow: hidden;
   }
   
   .page {
@@ -73,7 +72,7 @@ body {
 
   .drop_and_graph {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     align-items: center;
   }
 
@@ -182,7 +181,7 @@ body {
     border: none;
     overflow: auto;
     height: 25rem;
-    width: 35rem;
+    width: 70rem;
     /* border: 1px solid #dcdede; */
   }
 
