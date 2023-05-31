@@ -53,9 +53,11 @@ def submit_expression(request):
     if request.method == 'POST':
         data = json.loads(request.body)
         expression_list = data.get('expressionList')
-        expression_list = expression_list.replace("\n", "")
-        expression_list = expression_list.split()
+        # expression_list = expression_list.replace("\n", "")
+        # expression_list = expression_list.split()
         expression_string =data.get('expressionName')
+        expression_lst = re.findall(r'[^\s\n()*/+-]+|[()*+\-]', expression_list)
+        expression_lst = [ele.strip() for ele in expression_lst]
 
         print("expression_lst  in submit expression at view.py: ",expression_lst)
         plot_html = modified_result(df, expression_lst, expression_string)
