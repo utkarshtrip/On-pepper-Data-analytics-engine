@@ -5,8 +5,8 @@ from .xbrl_parser import parse_xbrl
 import pandas as pd
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from .graph_creator import modified_result
-
+from .graph_creator import modified_result,return_newColumn_df
+import re
 expression_list = []
 
 def xbrl_table(request):
@@ -37,8 +37,19 @@ def xbrl_table(request):
     else:
         return render(request, 'xbrl_table.html')
 
+def save_expression_column(request):
+    if request.method=='POST':
+        data = json.loads(request.body)
+        save_expression = data.get('save expression')
+        if save_expression==True:
+           global df
+           df=return_newColumn_df(df)
+           print(df.columns)
+           print(df.head(3))
 
+    return JsonResponse({'status': 'error'})
 def submit_expression(request):
+    
     if request.method == 'POST':
         data = json.loads(request.body)
         expression_list = data.get('expressionList')
@@ -46,29 +57,10 @@ def submit_expression(request):
         expression_list = expression_list.split()
         expression_string =data.get('expressionName')
 
-        global df
-
-        plot_html = modified_result(df, expression_list, expression_string)
+        print("expression_lst  in submit expression at view.py: ",expression_lst)
+        plot_html = modified_result(df, expression_lst, expression_string)
+        # plot_html = modified_result(df, expression_list, expression_string)
         # Render the HTML page with the graph
         return JsonResponse({'plot_html': plot_html,})
 
     return JsonResponse({'status': 'error'})
-
-def save_expression_column(request):
-    if request.method == 'POST':
-        data = json.loads(request.body)
-        save_expression = data.get('saveExpression')
-
-        if save_expression:
-            # Perform action when saveExpression is True
-            # For example, update the global df and add an expression column
-            global df
-            df['expression_name'] = modified_result(df, expression_list, expression_string)
-            return JsonResponse({'message': 'Expression column saved.'})
-
-        # Perform action when saveExpression is False or not provided
-        # For example, do something else or provide a different response
-        return JsonResponse({'message': 'No action taken.'})
-
-    # Handle other request methods if needed
-    return JsonResponse({'message': 'Invalid request method.'})
