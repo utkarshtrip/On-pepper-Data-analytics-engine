@@ -45,6 +45,7 @@ def submit_expression(request):
         expression_list = expression_list.replace("\n", "")
         expression_list = expression_list.split()
         expression_string = ' '.join(expression_list)
+
         global df
 
         plot_html = modified_result(df, expression_list, expression_string)

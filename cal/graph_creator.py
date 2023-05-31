@@ -107,30 +107,15 @@ def apply_operations(new_df, expression_list):
 def modified_result(df, expression_list, expression_string):
     # Create a modified dataframe
     modified_df = df
-    # print(modified_df.head())
-    # Get the modified DataFrame with the result column
-    # modified_df['new_column'] = modified_df[expression_list[0]]
-    # for i in range(1, len(expression_list), 2):
-    #     if expression_list[i] == '+':
-    #         modified_df['new_column'] = modified_df['new_column'].astype(float) + modified_df[expression_list[i + 1]].astype(float)
-    #     elif expression_list[i] == '-':
-    #         modified_df['new_column'] = modified_df['new_column'].astype(float) - modified_df[expression_list[i + 1]].astype(float)
-    #     elif expression_list[i] == '*':
-    #         modified_df['new_column'] = modified_df['new_column'].astype(float) * modified_df[expression_list[i + 1]].astype(float)
-    #     elif expression_list[i] == '/':
-    #         modified_df['new_column'] = modified_df['new_column'].astype(float) / modified_df[expression_list[i + 1]].astype(float)
-    # # print(modified_df['new_column'].head())
-    # Calculate the number of points to display on the x-axis
-    # Calculate the number of points to display on the x-axis
-    
+   
     modified_df['new_column']=apply_operations(modified_df,expression_list)
     
-    modified_df['Period'] = modified_df['Period'].astype('datetime64[ns]')
-    # print("datatype of period:", modified_df['Period'])
-    # modified_df['Period'] = pd.to_datetime(modified_df['Period'], format='%Y%m%d')
-    
+    modified_df['Period'] = modified_df['Period'].astype('datetime64[ns]')   
     fig = go.Figure()
-    fig.add_trace(go.Scatter(x=modified_df[modified_df.columns.tolist()[0]], y=modified_df['new_column'], mode='lines'))
+    column_list=['Revenue','Sales_quantity','Average_cost','The_average_annual_payroll_of_the_region']
+    fig = px.line(modified_df, x = 'Period', y = column_list)
+    # fig = px.line(modified_df, x = 'Period', y = modified_df.columns[1:])
+    # fig.add_trace(go.Scatter(x=modified_df[modified_df.columns.tolist()[0]], y=modified_df['new_column'], mode='lines'))
     fig.update_layout(title=expression_string, title_y=0.9, title_x=0.5, title_yanchor='top')
     plot_div = opy.plot(fig, auto_open=False, output_type='div')
     fig.update_layout(
@@ -163,27 +148,9 @@ def modified_result(df, expression_list, expression_string):
     )
 )
 
-
-
     # fig.update_layout(title=expression_string, title_y=0.9, title_x=0.5, title_yanchor='top')
     # fig = px.line(modified_df, x = modified_df.columns[0], y = ['new_column'])
     plot_div = opy.plot(fig, auto_open=True,include_plotlyjs = True, output_type='div')
-
-
-
-
-    # num_points = 10
-    # interval = len(modified_df) // num_points
-    # x_values = modified_df[modified_df.columns.tolist()[0]][::interval]
-    # y_values = apply_operations(modified_df, expression_list)[::interval]
-    # # Create the plot
-    # fig = go.Figure()  
-    # fig.add_trace(go.Scatter(x=x_values, y=y_values, mode='lines'))
-
-
-
-
-
 
     # fig = go.Figure()
     
