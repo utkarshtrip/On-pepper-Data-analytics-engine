@@ -1,115 +1,97 @@
 {% load static %}
 <!DOCTYPE html>
 <html style="width: 100%; height: 100%" lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>XBRL Table</title>
-    <link
-      type="text/css"
-      rel="stylesheet"
-      href="{% static 'xbrl_table.css' %}"
-    />
-  </head>
-  <body>
-    <div class="page">
-      <div class="upload_button">
-        <form
-          method="POST"
-          enctype="multipart/form-data"
-          action="{% url 'xbrl_table' %}"
-          id="upload-form"
-          style="padding: 10px; cursor: pointer; margin-top: 5px"
-        >
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>XBRL Table</title>
+  <link type="text/css" rel="stylesheet" href="{% static 'xbrl_table.css' %}" />
+</head>
+<body>
+  <div class="page">
+    <div class="upload_button">
+      <form
+        method="POST"
+        enctype="multipart/form-data"
+        action="{% url 'xbrl_table' %}"
+        id="upload-form"
+        style="padding: 10px; cursor: pointer; margin-top: 5px"
+      >
         {% csrf_token %}
-          <div style="position: relative; display: inline-block">
-            <input
-              type="file"
-              name="file"
-              id="file-input"
-              style="display: none"
-            />
-            <label for="file-input" style="cursor: pointer; display: flex">
-              <img
-                src="{% static 'upload.svg' %}"
-                alt="Upload"
-                style="cursor: pointer; padding-right: 5px"
-              />
-              Select Files
-            </label>
-          </div>
-        </form>
-      </div>
-      <div class="left_main_div">
-        <div class="logo">
-          <img src="{% static 'pepper-logo.svg' %}" alt="Logo" />
+        <div style="position: relative; display: inline-block">
+          <input type="file" name="file" id="file-input" style="display: none" />
+          <label for="file-input" style="cursor: pointer; display: flex">
+            <img src="{% static 'upload.svg' %}" alt="Upload" style="cursor: pointer; padding-right: 5px" />
+            Select Files
+          </label>
         </div>
-        <div class="Column_div">
-          <b>Columns</b>
-          {% for header in data.0.keys %}
-          <div
-            class="column-box"
-            draggable="true"
-            ondragstart="drag(event)"
-            data-type="column"
-          >
-            <span>{{ header|linebreaksbr }}</span>
-          </div>
-          {% endfor %}
-        </div>
+      </form>
+    </div>
+    <div class="left_main_div">
+      <div class="logo">
+        <img src="{% static 'pepper-logo.svg' %}" alt="Logo" />
       </div>
-      <div class="right_main_div">
-        <div style="display: flex; flex-direction: column; align-items: center">
+      <div class="Column_div">
+        <b>Columns</b>
+        {% for header in data.0.keys %}
+        <div class="column-box" draggable="true" ondragstart="drag(event)" data-type="column">
+          <span>{{ header|linebreaksbr }}</span>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    <div class="right_main_div">
+      <div style="display: flex; flex-direction: column; align-items: center">
+        <div class="onPepper">
+          <div style="display: flex; justify-content: center; align-items: center"></div>
           <div class="onPepper">
-            <div style="display: flex; justify-content: center; align-items: center"></div>
-            <div class="onPepper">
-              <h1>Model Building Engine</h1>
-            </div>
+            <h1>Model Building Engine</h1>
           </div>
         </div>
-        <div class="drop_and_graph">
-          <div class="parent_div">
-            <div class="poora_box">
-              <div class="checkbox">
-                <label for="myCheckbox">Save expression</label>
-                <input type="checkbox" id="myCheckbox" />
-              </div>
-              <div class="drop_box_cum_expression" id="dropZone">
-                <div class="expression_name">
-                  <b>Expression Name:</b>
-                  <input
+      </div>
+      <div class="drop_and_graph">
+        <div class="parent_div">
+          <div class="poora_box">
+            <div class="checkbox">
+              <label for="myCheckbox">Save expression</label>
+              <input type="checkbox" id="myCheckbox" />
+            </div>
+            <div class="drop_box_cum_expression" id="dropZone">
+              <div class="expression_name">
+                <b>Expression Name:</b>
+                <input
                   type="text"
                   id="expressionNameInput"
                   placeholder="Provide the name of the expression"
-                  />
+                />
+              </div>
+              <br>
+              <div class="sting_holder">
+                <b>Expression:</b>
+                <input
+                  type="text"
+                  id="expressionInput"
+                  placeholder="Provide the expression Drag and drop column"
+                />
+                <div>
+                  <button type="button" id="clearExpressionList" onclick="clearExpressionList()">
+                    Clear
+                  </button>
                 </div>
-                <br>
-                <div class="sting_holder">
-                  <b>Expression:</b>
-                  <input
-                    type="text"
-                    id="expressionInput"
-                    placeholder="Provide the expression Drag and drop column"
-                  />
-                  <div>
-                    <button type="button" id="clearExpressionList" onclick="clearExpressionList()">
-                      Clear
-                    </button>
-                  </div>
-                </div>
-                <div style="display: flex; flex-direction: row; align-items: center">
-                  <button type="button" id="submitExpressionBtn">Submit</button>
-                </div>
+              </div>
+              <div style="display: flex; flex-direction: row; align-items: center">
+                <button type="button" id="submitExpressionBtn">Submit</button>
               </div>
             </div>
           </div>
-            <div class="graph_image" id="graphImageDiv">
-              <iframe id="graph-iframe"></iframe>
-            </div>
+        </div>
+        <div class="graph_image" id="graphImageDiv">
+          <iframe id="graph-iframe"></iframe>
         </div>
       </div>
     </div>
-    <script src="{% static 'static.js' %}"></script>
-  </body>
+  </div>
+  <script src="{% static 'static.js' %}"></script>
+</body>
 </html>
