@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-ty+idt0#b%ts+_5gs8yo))n+c)40!$yk0^c7*=-q^u8zi@efes'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1','localhost','pepper-analytics.azurewebsites.net']
 
@@ -122,7 +122,7 @@ STATIC_URL = 'static/'
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
-    '/var/www/static/'
+#     '/var/www/static/'
 ]
 
 STATIC_ROOT = BASE_DIR / 'static_files'
