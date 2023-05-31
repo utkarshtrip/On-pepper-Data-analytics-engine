@@ -22,7 +22,7 @@
           id="upload-form"
           style="padding: 10px; cursor: pointer; margin-top: 5px"
         >
-          {% csrf_token %}
+        {% csrf_token %}
           <div style="position: relative; display: inline-block">
             <input
               type="file"
@@ -57,7 +57,6 @@
             <span>{{ header|linebreaksbr }}</span>
           </div>
           {% endfor %}
-          <br /><br /><br /><br /><br /><br />
         </div>
       </div>
       <div class="right_main_div">
@@ -77,12 +76,21 @@
                 <input type="checkbox" id="myCheckbox" />
               </div>
               <div class="drop_box_cum_expression" id="dropZone">
-                <h3>Expression:</h3>
+                <div class="expression_name">
+                  <b>Expression Name:</b>
+                  <input
+                  type="text"
+                  id="expressionNameInput"
+                  placeholder="Provide the name of the expression"
+                  />
+                </div>
+                <br>
                 <div class="sting_holder">
+                  <b>Expression:</b>
                   <input
                     type="text"
                     id="expressionInput"
-                    placeholder="Drag and drop column and operator here"
+                    placeholder="Provide the expression Drag and drop column"
                   />
                   <div>
                     <button type="button" id="clearExpressionList" onclick="clearExpressionList()">
@@ -96,117 +104,12 @@
               </div>
             </div>
           </div>
-          <div class="graph_image" id="graphImageDiv" style="display: none">
-            <iframe id="graph-iframe"></iframe>
-          </div>
+            <div class="graph_image" id="graphImageDiv">
+              <iframe id="graph-iframe"></iframe>
+            </div>
         </div>
       </div>
     </div>
-    <script>
-      let expression = "";
-      let columnDropped = false;
-      document.getElementById("file-input").addEventListener("change", function () {
-        document.getElementById("upload-form").submit();
-      });
-
-      const submitExpressionBtn = document.getElementById("submitExpressionBtn");
-      const clearBtn = document.getElementById("clearExpressionList");
-      const graphImageDiv = document.getElementById("graphImageDiv");
-
-      if (expression === "") {
-        clearBtn.style.display = "none";
-      }
-
-      const dropZone = document.getElementById("dropZone");
-      const expressionInput = document.getElementById("expressionInput");
-
-      dropZone.addEventListener("dragover", function (event) {
-        event.preventDefault();
-      });
-
-      dropZone.addEventListener("drop", function (event) {
-        event.preventDefault();
-        const draggedData = event.dataTransfer.getData("text/plain").trim(); // Remove leading/trailing spaces
-        const dataType = event.dataTransfer.getData("data-type");
-
-        expression += draggedData;
-        expressionInput.value = expression;
-        console.log(expression);
-        console.log(expressionInput);
-
-        if (expression !== "") {
-          clearBtn.style.display = "initial";
-        } else {
-          clearBtn.style.display = "none";
-        }
-
-        expressionInput.value = expression; // Update the expression in the text input
-      });
-
-      expressionInput.addEventListener("input", function (event) {
-        const inputText = event.target.value; // Remove leading/trailing spaces
-        expression = inputText;
-      });
-
-      function drag(event) {
-        event.dataTransfer.setData("text/plain", event.target.textContent);
-        event.dataTransfer.setData("data-type", event.target.getAttribute("data-type"));
-      }
-
-      function clearExpressionList() {
-  expression = "";
-  columnDropped = false;
-  expressionInput.value = "";
-}
-
-      submitExpressionBtn.addEventListener("click", function () {
-        // Send the expression list to the backend
-        submitExpressionList(expression);
-        clearBtn.style.display = "none";
-        graphImageDiv.style.display = "block";
-      });
-
-      async function submitExpressionList(expression) {
-        const csrfToken = document.querySelector("[name=csrfmiddlewaretoken]").value;
-
-        try {
-          const response = await fetch("/submit-expression", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "X-CSRFToken": csrfToken,
-            },
-            body: JSON.stringify({ expressionList: expression }),
-          });
-
-          if (!response.ok) {
-            throw new Error("Network response was not ok");
-          }
-
-          const data = await response.json();
-          const plotHtml = data.plot_html;
-          const expressionString = data.expression_string;
-
-          // Get the expression div element
-          const expressionDiv = document.getElementById("expressionDiv");
-
-          // Set the expression string as the inner HTML of the div
-          // expressionDiv.innerHTML = expressionString;
-
-          // Get the iframe element
-          const iframe = document.getElementById("graph-iframe");
-
-          // Set the HTML content of the iframe
-          iframe.contentDocument.open();
-          iframe.contentDocument.write(plotHtml);
-          iframe.contentDocument.close();
-
-          // Clear the expression list and reset variables
-          clearExpressionList();
-        } catch (error) {
-          console.error("Error:", error);
-        }
-      }
-    </script>
+    <script src="{% static 'static.js' %}"></script>
   </body>
 </html>

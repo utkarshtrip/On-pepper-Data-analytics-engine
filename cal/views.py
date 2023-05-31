@@ -44,7 +44,7 @@ def submit_expression(request):
         expression_list = data.get('expressionList')
         expression_list = expression_list.replace("\n", "")
         expression_list = expression_list.split()
-        expression_string = ' '.join(expression_list)
+        expression_string =data.get('expressionName')
 
         global df
 
@@ -53,3 +53,22 @@ def submit_expression(request):
         return JsonResponse({'plot_html': plot_html,})
 
     return JsonResponse({'status': 'error'})
+
+def save_expression_column(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        save_expression = data.get('saveExpression')
+
+        if save_expression:
+            # Perform action when saveExpression is True
+            # For example, update the global df and add an expression column
+            global df
+            df['expression_name'] = modified_result(df, expression_list, expression_string)
+            return JsonResponse({'message': 'Expression column saved.'})
+
+        # Perform action when saveExpression is False or not provided
+        # For example, do something else or provide a different response
+        return JsonResponse({'message': 'No action taken.'})
+
+    # Handle other request methods if needed
+    return JsonResponse({'message': 'Invalid request method.'})
