@@ -3,18 +3,20 @@ const clearBtn = document.getElementById("clearExpressionList");
 const graphImageDiv = document.getElementById("graphImageDiv");
 const dropZone = document.getElementById("dropZone");
 const expressionInput = document.getElementById("expressionInput");
-const expressionInputName = document.getElementById("expressionInputName");
+const expressionNameInput = document.getElementById("expressionNameInput");
+console.log(expressionNameInput);
 const saveExpressionCheckbox = document.getElementById("myCheckbox");
 let expression = "";
 let columnDropped = false;
+let expressionName = "";
 
 document.getElementById("file-input").addEventListener("change", function () {
   document.getElementById("upload-form").submit();
 });
 
 if (expression === "") {
-    clearBtn.style.display = "none";
-    graphImageDiv.style.display = "none";
+  clearBtn.style.display = "none";
+  graphImageDiv.style.display = "none";
 }
 
 dropZone.addEventListener("dragover", function (event) {
@@ -47,10 +49,7 @@ expressionInput.addEventListener("input", function (event) {
 
 function drag(event) {
   event.dataTransfer.setData("text/plain", event.target.textContent);
-  event.dataTransfer.setData(
-    "data-type",
-    event.target.getAttribute("data-type")
-  );
+  event.dataTransfer.setData("data-type", event.target.getAttribute("data-type"));
 }
 
 function clearExpressionList() {
@@ -61,11 +60,11 @@ function clearExpressionList() {
 
 submitExpressionBtn.addEventListener("click", function () {
   // Send the expression list to the backend
-  const expressionName = expressionInputName.value;
+  expressionName = expressionNameInput.value;
   submitExpressionList(expression, expressionName);
   clearBtn.style.display = "none";
   graphImageDiv.style.display = "flex";
-  expressionName.value="";
+  expressionNameInput.value = "";
 });
 
 async function submitExpressionList(expression, expressionName) {
@@ -78,8 +77,7 @@ async function submitExpressionList(expression, expressionName) {
         "Content-Type": "application/json",
         "X-CSRFToken": csrfToken,
       },
-      body: JSON.stringify({ expressionList: expression,
-                             expressionName: expressionName}),
+      body: JSON.stringify({ expressionList: expression, expressionName: expressionName }),
     });
 
     if (!response.ok) {
@@ -107,49 +105,8 @@ async function submitExpressionList(expression, expressionName) {
   }
 }
 
-// Function to retrieve CSRF token from cookies
+// Get CSRF token from cookies
 function getCookie(name) {
-  let cookieValue = null;
-  if (document.cookie && document.cookie !== "") {
-    const cookies = document.cookie.split(";");
-    for (let i = 0; i < cookies.length; i++) {
-      const cookie = cookies[i].trim();
-      // Check if the cookie name matches the desired name
-      if (cookie.substring(0, name.length + 1) === name + "=") {
-        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-        break;
-      }
-    }
-  }
-  return cookieValue;
-}
-
-saveExpressionCheckbox.addEventListener("change", function () {
-  const saveExpression = saveExpressionCheckbox.checked;
-
-  // Send the saveExpression value to the backend
-  saveExpressionColumn(saveExpression);
-});
-
-async function saveExpressionColumn(saveExpression) {
-  const csrfToken = getCookie("csrftoken");
-
-  try {
-    const response = await fetch("/save_expression_column", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-CSRFToken": csrfToken,
-      },
-      body: JSON.stringify({ saveExpression }),
-    });
-
-    if (!response.ok) {
-      throw new Error("Network response was not ok");
-    }
-
-    // Handle the response as needed
-  } catch (error) {
-    console.error("Error:", error);
-  }
+  const cookieValue = document.cookie.match("(^|;)\\s*" + name + "\\s*=\\s*([^;]+)");
+  return cookieValue ? cookieValue.pop() : "";
 }
