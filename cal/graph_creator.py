@@ -104,15 +104,24 @@ def apply_operations(new_df, expression_list):
     result = evaluate_bodmas(new_df, expression_list)
     return result
 
+def return_newColumn_df(df):
+      global copy_col
+      return pd.concat([df, copy_col], axis=1)
+
 def modified_result(df, expression_list, expression_string):
     # Create a modified dataframe
     modified_df = df
-   
-    modified_df['new_column']=apply_operations(modified_df,expression_list)
-    
+    print("I am in start of modified_result: ",expression_list," ",expression_string," ")
+    modified_df[expression_string]=apply_operations(modified_df,expression_list)
+    global copy_col
+    copy_col=pd.DataFrame()
+    copy_col =  modified_df[expression_string]
+
+    print(" i am in plot else block")
     modified_df['Period'] = modified_df['Period'].astype('datetime64[ns]')   
     fig = go.Figure()
-    column_list=['Revenue','Sales_quantity','Average_cost','The_average_annual_payroll_of_the_region']
+    print("dataframe to plot graph: ",expression_string)
+    column_list=[expression_string,'Revenue','Sales_quantity','Average_cost','The_average_annual_payroll_of_the_region']
     fig = px.line(modified_df, x = 'Period', y = column_list)
     # fig = px.line(modified_df, x = 'Period', y = modified_df.columns[1:])
     # fig.add_trace(go.Scatter(x=modified_df[modified_df.columns.tolist()[0]], y=modified_df['new_column'], mode='lines'))
@@ -123,21 +132,21 @@ def modified_result(df, expression_list, expression_string):
         rangeselector=dict(
             buttons=list([
                 dict(count=1,
-                     label="1m",
-                     step="month",
-                     stepmode="backward"),
+                    label="1m",
+                    step="month",
+                    stepmode="backward"),
                 dict(count=6,
-                     label="6m",
-                     step="month",
-                     stepmode="backward"),
+                    label="6m",
+                    step="month",
+                    stepmode="backward"),
                 dict(count=1,
-                     label="YTD",
-                     step="year",
-                     stepmode="todate"),
+                    label="YTD",
+                    step="year",
+                    stepmode="todate"),
                 dict(count=1,
-                     label="1y",
-                     step="year",
-                     stepmode="backward"),
+                    label="1y",
+                    step="year",
+                    stepmode="backward"),
                 dict(step="all")
             ])
         ),
@@ -145,8 +154,8 @@ def modified_result(df, expression_list, expression_string):
             visible=True
         ),
         type="date"
+        )
     )
-)
 
     # fig.update_layout(title=expression_string, title_y=0.9, title_x=0.5, title_yanchor='top')
     # fig = px.line(modified_df, x = modified_df.columns[0], y = ['new_column'])
