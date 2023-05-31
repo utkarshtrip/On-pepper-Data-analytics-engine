@@ -82,6 +82,10 @@ DATABASES = {
     }
 }
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://pepper-analytics.azurewebsites.net',
+    # Add any other trusted origins here
+]
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
