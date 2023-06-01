@@ -9,6 +9,10 @@ from .graph_creator import modified_result,return_newColumn_df
 import re
 expression_list = []
 
+# def update_dataframe_afterSave(df):
+#     context = {'data': df.to_dict('records')}
+#     return context
+
 def xbrl_table(request):
     if request.method == 'POST':
         file = request.FILES.get('file')
@@ -18,17 +22,17 @@ def xbrl_table(request):
             # df = parse_xbrl(file)
             df= pd.read_csv(file)
             # Handle expression evaluation
-            expression = request.POST.get('expression', '')
-            if expression:
-                try:
-                    df['Result'] = eval(expression, {'df': df})
-                    expression_list.append(expression)
-                except Exception as e:
-                    error_message = str(e)
-                    context = {'error_message': error_message}
-                    return render(request, 'error.html', context)
+            # expression = request.POST.get('expression', '')
+            # if expression:
+            #     try:
+            #         df['Result'] = eval(expression, {'df': df})
+            #         expression_list.append(expression)
+            #     except Exception as e:
+            #         error_message = str(e)
+            #         context = {'error_message': error_message}
+            #         return render(request, 'error.html', context)
 
-            context = {'data': df.to_dict('records'), 'expressions': expression_list}
+            context = {'data': df.to_dict('records')}
             return render(request, 'xbrl_table.html', context)
         else:
             error_message = 'No file was selected.'
@@ -44,10 +48,11 @@ def save_expression_column(request):
         if save_expression==True:
            global df
            df=return_newColumn_df(df)
-           print(df.columns)
-           print(df.head(3))
+           context = {'data': df.to_dict('records')}
+           return context
 
     return JsonResponse({'status': 'error'})
+
 def submit_expression(request):
     
     if request.method == 'POST':

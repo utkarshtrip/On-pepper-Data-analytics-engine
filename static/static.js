@@ -110,3 +110,34 @@ function getCookie(name) {
   const cookieValue = document.cookie.match("(^|;)\\s*" + name + "\\s*=\\s*([^;]+)");
   return cookieValue ? cookieValue.pop() : "";
 }
+
+saveExpressionCheckbox.addEventListener("change", function () {
+    const saveExpression = saveExpressionCheckbox.checked;
+  
+    // Send the saveExpression value to the backend
+    saveExpressionColumn(saveExpression);
+  });
+  
+  async function saveExpressionColumn(saveExpression) {
+    const csrfToken = getCookie("csrftoken");
+  
+    try {
+      const response = await fetch("/save-expression-column", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": csrfToken,
+        },
+        body: JSON.stringify({ saveExpression }),
+      });
+  
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+  
+      // Handle the response as needed
+  
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  }
