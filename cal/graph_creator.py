@@ -17,7 +17,7 @@ def apply_operations(new_df, expression_list):
     operators = {
         '+': operator.add,
         '-': operator.sub,
-        'x': operator.mul,
+        '*': operator.mul,
         '/': operator.truediv,
     }
 
@@ -111,18 +111,16 @@ def return_newColumn_df(df):
 def modified_result(df, expression_list, expression_string):
     # Create a modified dataframe
     modified_df = df
-    print("I am in start of modified_result: ",expression_list," ",expression_string," ")
     modified_df[expression_string]=apply_operations(modified_df,expression_list)
     global copy_col
     copy_col=pd.DataFrame()
-    copy_col =  modified_df[expression_string]
-
-    print(" i am in plot else block")
+    copy_col =  modified_df[[expression_string]]
+    print("I am in modified_result function")
     modified_df['Period'] = modified_df['Period'].astype('datetime64[ns]')   
-    fig = go.Figure()
-    print("dataframe to plot graph: ",expression_string)
-    column_list=[expression_string,'Revenue','Sales_quantity','Average_cost','The_average_annual_payroll_of_the_region']
-    fig = px.line(modified_df, x = 'Period', y = column_list)
+    print(modified_df.columns)
+    fig = go.Figure()   
+    column_list=['Revenue','Sales_quantity','Average_cost','The_average_annual_payroll_of_the_region']
+    fig = px.line(modified_df, x = 'Period', y = ['expression_string']+column_list)
     # fig = px.line(modified_df, x = 'Period', y = modified_df.columns[1:])
     # fig.add_trace(go.Scatter(x=modified_df[modified_df.columns.tolist()[0]], y=modified_df['new_column'], mode='lines'))
     fig.update_layout(title=expression_string, title_y=0.9, title_x=0.5, title_yanchor='top')

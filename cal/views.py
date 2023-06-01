@@ -9,6 +9,10 @@ from .graph_creator import modified_result,return_newColumn_df
 import re
 expression_list = []
 
+# def update_dataframe_afterSave(df):
+#     context = {'data': df.to_dict('records')}
+#     return render(request, 'xbrl_table.html', context)
+
 def xbrl_table(request):
     if request.method == 'POST':
         file = request.FILES.get('file')
@@ -28,7 +32,9 @@ def xbrl_table(request):
                     context = {'error_message': error_message}
                     return render(request, 'error.html', context)
 
-            context = {'data': df.to_dict('records'), 'expressions': expression_list}
+            # context = {'data': df.to_dict('records'), 'expressions': expression_list}
+            context = {'data': df.to_dict('records')}
+            # context=update_dataframe_afterSave(df)
             return render(request, 'xbrl_table.html', context)
         else:
             error_message = 'No file was selected.'
@@ -44,22 +50,24 @@ def save_expression_column(request):
         if save_expression==True:
            global df
            df=return_newColumn_df(df)
+           context = {'data': df.to_dict('records')}
            print(df.columns)
            print(df.head(3))
-
     return JsonResponse({'status': 'error'})
 def submit_expression(request):
     
     if request.method == 'POST':
         data = json.loads(request.body)
+        # expression_string =data.get('expressionName')
         expression_list = data.get('expressionList')
-        # expression_list = expression_list.replace("\n", "")
-        # expression_list = expression_list.split()
-        expression_string =data.get('expressionName')
+        print("expression_list: ",expression_list)
         expression_lst = re.findall(r'[^\s\n()*/+-]+|[()*+\-]', expression_list)
         expression_lst = [ele.strip() for ele in expression_lst]
-
-        print("expression_lst  in submit expression at view.py: ",expression_lst)
+        # expression_list = expression_list.replace("\n", "")
+        # expression_list = expression_list.split()
+        print("expression_lst: ",expression_lst)
+        expression_string=' '.join(expression_lst.split())
+        print("expression_string: ",expression_string)
         plot_html = modified_result(df, expression_lst, expression_string)
         # plot_html = modified_result(df, expression_list, expression_string)
         # Render the HTML page with the graph
